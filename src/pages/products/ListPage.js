@@ -10,7 +10,7 @@ const ListPage = () => {
     return (
         <div className="p-4 w-full bg-white">
             <div className="text-3xl font-extrabold text-green-700">
-                Produts List Page components
+                Products List Page components
             </div>
             <div className="text-2xl font-extrabold">
                 <br />page: {page} / size: {size}

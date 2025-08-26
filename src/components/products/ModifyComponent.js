@@ -11,7 +11,7 @@ const initState = {
     delflag: false
 }
 
-const ModifyComponent = ({ tno }) => {
+const ModifyComponent = ({ pno }) => {
     const [products, setProducts] = useState({ ...initState })
     const [result, setResult] = useState(null)
     const {moveToList, moveToRead} = useCustomMove()
@@ -43,7 +43,7 @@ const ModifyComponent = ({ tno }) => {
         if(result === '삭제성공')
             moveToList()
         else
-            moveToRead(tno)
+            moveToRead(pno)
     }
 
     useEffect(() => {
