@@ -15,3 +15,18 @@ export const getList = async (pageParam) => {
     const res = await axios.get(`${host}/list`, { params: { page: page, size: size } })
     return res.data
 }
+
+export const getOne = async (pno) => {
+    const res = await axios.get(`${host}/${pno}`)
+    return res.data
+}
+
+export const putOne = async (products) => {
+    const res = await axios.put(`${host}/${products.pno}`, products)
+    return res.data
+}
+
+export const deleteOne = async (products) => {
+    const res = await axios.delete(`${host}/${products.pno}`)
+    return res.data
+}

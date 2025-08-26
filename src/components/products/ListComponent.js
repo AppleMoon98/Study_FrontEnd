@@ -29,7 +29,7 @@ const ListComponent = () => {
         <div className="border-2 border-green-100 mt-10 mr-2 ml-2">
             <div className="flex flex-wrap mx-auto justify-center p-6">
                 {serverData.dtoList.map( products => 
-                    <div key={products.pno} className="w-full min-w-[400px] p-2 m-2 rounded shadow-md"
+                    <div key={products.pno} className="w-1/2 min-w-[400px] p-2 m-2 rounded shadow-md"
                     onClick={ () => moveToRead(products.pno)}>
                             <div className="font-extrabold text-lg p-2 w-1/12">{products.pno}</div>
                             <div className="font-extrabold text-base m-1 p-2 w-8/12">{products.i}</div>
