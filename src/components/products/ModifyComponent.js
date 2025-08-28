@@ -1,20 +1,24 @@
-import { useEffect, useState } from "react";
-import { deleteOne, getOne, putOne } from "../../api/productsApi";
+import { useEffect, useRef, useState } from "react";
+import { deleteOne, getOne, putOne, getOneImage } from "../../api/productsApi";
 import useCustomMove from "../../hooks/useCustomMove"
 import ResultModal from "../common/ResultModal"
+import FetchingModal from "../common/FetchingModal"
 
 const initState = {
     pno: 0,
     pname: '',
     pdesc: '',
     price: 0,
-    delflag: false
+    delflag: false,
+    uploadFileNames: []
 }
 
 const ModifyComponent = ({ pno }) => {
     const [products, setProducts] = useState({ ...initState })
     const [result, setResult] = useState(null)
-    const {moveToList, moveToRead} = useCustomMove()
+    const { moveToList, moveToRead } = useCustomMove()
+    const [fetching, setFetching] = useState(false)
+    const uploadRef = useRef()
 
     const handleChangeProducts = (e) => {
         products[e.target.name] = e.target.value
@@ -24,11 +28,28 @@ const ModifyComponent = ({ pno }) => {
     const handleChangeProductsComplete = (e) => {
         const value = e.target.value
         products.delflag = (value === 'Y')
-        setProducts({...products})
+        setProducts({ ...products })
     }
 
     const handleClickModify = () => {
-        putOne(products).then(data => {
+        const files = uploadRef.current.files
+        const formDate = new FormData()
+        for (let i = 0; i < files.length; i++) {
+            formDate.append("files", files[i]);
+        }
+
+        formDate.append("pname", products.pname)
+        formDate.append("pdesc", products.pdesc)
+        formDate.append("price", products.price)
+        formDate.append("delFlag", products.delflag)
+
+        for (let i = 0; i < products.uploadFileNames.length; i++) {
+            formDate.append("uploadFileNames", products.uploadFileNames[i])
+        }
+
+        setFetching(true)
+
+        putOne(formDate, products.pno).then(data => {
             setResult("수정성공")
         })
     }
@@ -39,28 +60,38 @@ const ModifyComponent = ({ pno }) => {
         })
     }
 
+    const deleteOldImages = (imageName) => {
+        const resultFileNames = products.uploadFileNames.filter(fileName => fileName !== imageName)
+        products.uploadFileNames = resultFileNames
+        setProducts({ ...products })
+    }
+
     const closeModal = () => {
-        if(result === '삭제성공')
-            moveToList()
+        if (result === '삭제성공')
+            moveToList({ page: 1 })
         else
             moveToRead(pno)
+        setResult(null)
     }
 
     useEffect(() => {
+        setFetching(true)
         getOne(pno).then(data => {
             console.log(data)
             setProducts(data)
+            setFetching(false)
         })
     }, [pno])
 
     return (
         <div className="border-2 border-green-200 mt-10 m-2 p-4">
-            { result ? <ResultModal title={'처리결과'} content={result} callbackFn={closeModal}></ResultModal> : <></>}
+            {fetching ? <FetchingModal /> : <></>}
+            {result ? <ResultModal title={`${result}`} content={'정상적으로 처리되었습니다.'} callbackFn={closeModal} /> : <></>}
             <div className="flex justify-center">
                 <div className="relative mb-4 flex w-full flex-wrap items-stretch">
                     <div className="w-1/5 p-6 text-right font-bold">number</div>
                     <input className="w-4/5 p-6 rounded-r border border-solid border-neutral-500 shadow-md"
-                        name="pno" type={'text'} value={products.pno} disabled/>
+                        name="pno" type={'text'} value={products.pno} disabled />
                 </div>
             </div>
             <div className="flex justify-center">
@@ -79,12 +110,38 @@ const ModifyComponent = ({ pno }) => {
             </div>
             <div className="flex justify-center">
                 <div className="relative mb-4 flex w-full flex-wrap items-stretch">
+                    <div className="w-1/5 p-6 text-right font-bold">price</div>
+                    <input className="w-4/5 p-6 rounded-r border border-solid border-neutral-500 shadow-md"
+                        name="price" type={'number'} value={products.price} onChange={handleChangeProducts} />
+                </div>
+            </div>
+            <div className="flex justify-center">
+                <div className="relative mb-4 flex w-full flex-wrap items-stretch">
                     <div className="w-1/5 p-6 text-right font-bold">delflag</div>
                     <select name="status" className="border-solid border-2 rounded m-1 p-2" onChange={handleChangeProductsComplete}
                         value={products.delflag ? 'Y' : 'N'}>
-                        <option value='Y'>complate</option>
-                        <option value='N'>not complate</option>
+                        <option value='Y'>delflag</option>
+                        <option value='N'>not delflag</option>
                     </select>
+                </div>
+            </div>
+            <div className="flex justify-center">
+                <div className="relative mb-4 flex w-full flex-wrap items-stretch">
+                    <div className="w-1/5 p-6 text-right font-bold">FILES</div>
+                    <input ref={uploadRef} className="w-4/5 p-6 rounded-r border border-solid border-neutral-300 shadow-md" type={'file'} multiple={true} />
+                </div>
+            </div>
+            <div className="flex justify-center">
+                <div className="relative mb-4 flex w-full flex-wrap items-stretch">
+                    <div className="w-1/5 p-6 text-right font-bold">IMAGE</div>
+                    <div className="w-4/5 justify-center flex flex-wrap items-start">
+                        {products.uploadFileNames.map((imgFile, i) =>
+                            <div className="flex justify-center flex-col w-1/3" key={i}>
+                                <button className="bg-red-500 text-3xl text-white" onClick={() => deleteOldImages(imgFile)}>DELETE</button>
+                                <img alt="img" src={getOneImage(imgFile)} />
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
             <div className="flex justify-end p-4">

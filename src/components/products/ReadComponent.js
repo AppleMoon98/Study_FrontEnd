@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { getOne, getOneImage } from "../../api/productsApi"
 import useCustomMove from "../../hooks/useCustomMove"
+import FetchingModal from "../common/FetchingModal"
 
 const initState = {
     pno: 0,
@@ -21,16 +22,20 @@ const makeDiv = (title, value) =>
 const ReadComponent = ({ pno }) => {
     const [products, setProducts] = useState(initState)
     const { moveToList, moveToModify } = useCustomMove()
+    const [fetching, setFetching] = useState(false)
 
     useEffect(() => {
+        setFetching(true)
         getOne(pno).then(data => {
             console.log(data)
             setProducts(data)
+            setFetching(false)
         })
     }, [pno])
 
     return (
-        <div className="border-2 border-sky-200 mt-10 m-2 p-4">
+        <div className="border-2 border-green-200 mt-10 m-2 p-4">
+            {fetching ? <FetchingModal/> : <></>}
             {makeDiv('번호', products.pno)}
             {makeDiv('작성자', products.pdesc)}
             {makeDiv('제목', products.pname)}
@@ -46,8 +51,8 @@ const ReadComponent = ({ pno }) => {
             </div>
 
             <div className="flex justify-end">
-                <button type="button" className="rounded p-4 m-2 text-xl w-32 text-white bg-blue-500" onClick={() => moveToList()}>List</button>
-                <button type="button" className="rounded p-4 m-2 text-xl w-32 text-white bg-red-500" onClick={() => moveToModify(pno)}>Modify</button>
+                <button type="button" className="rounded p-4 m-2 text-xl w-32 text-white bg-blue-500" onClick={() => moveToList()}>목록</button>
+                <button type="button" className="rounded p-4 m-2 text-xl w-32 text-white bg-red-500" onClick={() => moveToModify(pno)}>수정</button>
             </div>
         </div>
     )

@@ -21,10 +21,12 @@ export const postAdd = async (products) => {
     return res.data
 }
 
-export const putOne = async (products) => {
-    const res = await axios.put(`${host}/${products.pno}`, products)
+export const putOne = async (formData, pno) => {
+    const header = { headers: { "Content-Type": "multipart/form-data" } }
+    const res = await axios.put(`${host}/${pno}`, formData, header)
     return res.data
 }
+
 
 export const deleteOne = async (products) => {
     const res = await axios.delete(`${host}/${products.pno}`)

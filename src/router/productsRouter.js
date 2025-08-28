@@ -10,20 +10,20 @@ const productsRouter = () => {
 
     return [
         {
-            path: "list",
-            element: <Suspense fallback={Loading}><ProductsList /></Suspense>
-        },
-        {
             path: "",
             element: <Navigate replace to="/products/list" />
         },
         {
-            path: "read/:pno",
-            element: <Suspense fallback={Loading}><ReadPage/></Suspense>
+            path: "list",
+            element: <Suspense fallback={Loading}><ProductsList /></Suspense>
         },
         {
             path: "add",
             element: <Suspense fallback={Loading}><ProductAdd/></Suspense>
+        },
+        {
+            path: "read/:pno",
+            element: <Suspense fallback={Loading}><ReadPage/></Suspense>
         },
         {
             path: "modify/:pno",
