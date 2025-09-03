@@ -8,6 +8,7 @@ const Main = lazy( ()=> import("../pages/MainPage"))
 const About = lazy( ()=> import("../pages/AboutPage"))
 const TodoIndex = lazy( ()=> import("../pages/todo/IndexPage"))
 const ProductsIndex = lazy( ()=> import("../pages/products/IndexPage"))
+const GoogleLoginAPI = lazy( () => import("../components/GoogleLoginAPI"))
 
 
 const root = createBrowserRouter([
@@ -27,6 +28,11 @@ const root = createBrowserRouter([
     {
         path:"products",
         element: <Suspense fallback={Loading}><ProductsIndex/></Suspense>,
+        children: productsRouter()
+    },
+    {
+        path:"test",
+        element: <Suspense fallback={Loading}><GoogleLoginAPI/></Suspense>,
         children: productsRouter()
     }
 ])
