@@ -19,13 +19,14 @@ export const loginPostAsync = createAsyncThunk('loginPostAsync', (param) => {
 
 const loginSlice = createSlice({
     name: 'LoginSlice',
-    initialState: initState || loadMemberCookie,
+    initialState: loadMemberCookie() || initState,
 
     reducers: {
         login: (state, action) => {
             console.log("login........")
-            const data = action.payload
-            return {email: data.email}
+            const payload = action.payload
+            setCookie("member", JSON.stringify(payload), 1)
+            return {email: payload.email}
         },
 
         logout: (state, action) => {

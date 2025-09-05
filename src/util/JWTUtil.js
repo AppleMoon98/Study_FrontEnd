@@ -41,7 +41,7 @@ const requestFail = (err) => {
     return Promise.reject(err)
 }
 
-const befroeRes = async (res) => {
+const beforeRes = async (res) => {
     console.log("before return response..........")
     const data = res.data
     if(data && data.error === 'ERROR_ACCESS_TOKEN'){
@@ -61,11 +61,11 @@ const befroeRes = async (res) => {
 }
 
 const responseFail = (err) => {
-    console("response fail error..........")
+    console.log("response fail error..........")
     return Promise.reject(err)
 }
 
 jwtAxios.interceptors.request.use(beforeReq, requestFail)
-jwtAxios.interceptors.response.use(befroeRes, responseFail)
+jwtAxios.interceptors.response.use(beforeRes, responseFail)
 
 export default jwtAxios

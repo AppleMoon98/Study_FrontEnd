@@ -19,7 +19,6 @@ const LoginComponent = () => {
         doLogin(loginParam)
             .then(data => {
                 console.log(data)
-
                 if (data.error)
                     alert("이메일 혹은 패스워드가 일치하지 않습니다.")
                 else {
