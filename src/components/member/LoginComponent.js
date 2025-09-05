@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useDispatch } from "react-redux"
-import { login } from "../../slices/LoginSlice"
+import { login, loginPostAsync } from "../../slices/LoginSlice"
+import { replace, useNavigate } from "react-router-dom"
 
 
 const initState = {
@@ -11,6 +12,7 @@ const initState = {
 const LoginComponent = () => {
     const [loginParam, setLoginParam] = useState({ ...initState })
     const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     const handleChange = (e) => {
         loginParam[e.target.name] = e.target.value
@@ -18,7 +20,19 @@ const LoginComponent = () => {
     }
 
     const handleClickLogin = (e) => {
-        dispatch(login(loginParam))
+        dispatch(loginPostAsync(loginParam))
+        .unwrap()
+        .then(data => {
+            console.log("after unwarp.......")
+            console.log(data)
+
+            if(data.error)
+                alert("이메일 혹은 패스워드가 일치하지 않습니다.")
+            else{
+                alert("Login")
+                navigate({pathname:`/`}, {replace:true})
+            }
+        })
     }
 
     return (

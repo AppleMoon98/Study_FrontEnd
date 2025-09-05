@@ -31,8 +31,10 @@ const BasicMenu = () => {
                     <div className="text-white text-sm m-1 rounded font-bold">
                         <Link to={'/member/login'}>Login</Link>
                     </div> : 
-                    <></>}
-
+                    <div className="text-white text-sm m-1 rounded font-bold">
+                        <Link to={'/member/logout'}>Logout</Link>
+                    </div>
+                }
             </div>
         </nav>
     )
